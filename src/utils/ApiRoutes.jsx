@@ -18,6 +18,10 @@ const ApiRoutes = {
     UPDATEPASSWORD:{
         path:'/user/reset-password/:token',
         authenticate:false
+    },
+    CANDIDATEDETAILS:{
+        path:'/user/candidate',
+        authenticate:true
     }
     
 }

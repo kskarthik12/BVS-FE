@@ -18,6 +18,12 @@
     width: 100%;
 }
 
+.metamask{
+    width: 200px;
+   
+    margin-left: 500px;
+}
+
 img {
    
     vertical-align: top !important;
@@ -25,7 +31,24 @@ img {
     height: 950px;
 }
 
-@media only screen and (max-width:768px) {
+h4{
+  
+    padding-top: 200px;
+    text-align: center;
+    
+}
+h2{
+    text-align: center;
+}
+
+.homepage{
+    height: 1000px;
+    background-image: url(https://as1.ftcdn.net/v2/jpg/07/60/72/52/1000_F_760725292_3ztmAm9RqImDc74VIb3H3jBPQznfOfOl.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+@media only screen and (max-width:768px) {  
     .loginWrapper {
         width: 100%;
         margin-top: 30px;
@@ -37,3 +60,62 @@ img {
         height: 100%;   
     }
 }
+
+/* Header  */
+.header {
+    grid-area: header;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding: 0 20px 0 30px;
+    box-shadow: 0 6px 7px -3px rgba(0, 0, 0, 0.35);
+  }
+  
+  
+  /* End Header  */
+
+
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .candidate-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    list-style-type: none;
+    margin: 0;
+  }
+  
+  .candidate-item {
+    flex: 1 1 300px; /* Adjust the width of the boxes */
+    display: flex;
+    justify-content: center;
+  }
+  
+  .candidate-box {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 300px;
+    background-color: #f9f9f9;
+  }
+  
+  .candidate-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .candidate-details {
+    text-align: center;
+    margin-top: 16px;
+  }
+  
