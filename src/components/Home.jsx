@@ -43,6 +43,11 @@ const contractABI = [
         "internalType": "string",
         "name": "_district",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_candidateName",
+        "type": "string"
       }
     ],
     "name": "addCandidate",
@@ -63,6 +68,11 @@ const contractABI = [
       {
         "internalType": "string",
         "name": "district",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "candidateName",
         "type": "string"
       },
       {
@@ -88,6 +98,11 @@ const contractABI = [
           {
             "internalType": "string",
             "name": "district",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "candidateName",
             "type": "string"
           },
           {
@@ -160,7 +175,7 @@ const contractABI = [
     "type": "function"
   }
 ]
-const contractAddress = '0x2ABc162a8F4fc871ccF1C03020Eb57C4DF04651d';
+const contractAddress = '0xBF4B613935974321Bb1a3a8c17e42f5647B39B03';
 
 
 const Home = () => {
@@ -186,14 +201,16 @@ const Home = () => {
         toast.error('Stored Ethereum address does not match the connected address');
         logout();
       } else {
-      setProvider(ethereumProvider);
+        setProvider(ethereumProvider);
       setSigner(ethSigner);
       setConnectedAddress(address);
       }
       
+      
+      
     } catch (error) {
-      console.error('Error connecting to MetaMask:', error);
-      logout();
+      toast.error('Error connecting to MetaMask:', error);
+     
     }
   };
 
@@ -226,7 +243,7 @@ const Home = () => {
       setCandidates(candidates);
     } catch (error) {
       toast.error('Error fetching candidates:', error);
-      logout();
+      
     }
   };
 
@@ -245,6 +262,7 @@ const Home = () => {
       const response = await signer.sendTransaction(tx);
       console.log('Transaction response:', response);
       toast.success('Vote successfully cast!');
+      
       
     } catch (error){
       const errorMessage = error.response?.data?.message || error.message || 'An unexpected error occurred';
@@ -269,9 +287,9 @@ const Home = () => {
           </div>
         </div>
       ) : (
-        <div className='homepage'>
+        <div className='homepage2'>
           <h2><mark>Connected Address: {connectedAddress}</mark></h2>
-          <h3><mark>Candidates:</mark></h3>
+          <h3>Candidates List:</h3>
           <div className="candidate-list">
             {candidates.length > 0 ? (
               candidates.map((candidate) => (

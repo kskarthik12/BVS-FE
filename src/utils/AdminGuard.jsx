@@ -1,10 +1,22 @@
-import {Navigate} from 'react-router-dom'
+import { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
-function AdminGuard({children}) {
-  let role = sessionStorage.getItem('role')
-  let token = sessionStorage.getItem('token')
+function AdminGuard({ children }) {
+  const role = sessionStorage.getItem('role');
+  const token = sessionStorage.getItem('token');
 
-  return token && role === 'admin' ? children : <Navigate to='/login'/>
+  useEffect(() => {
+    if (!(token && role === 'admin')) {
+      toast.error("Only Admin can access this site ");
+    }
+  }, [token, role]);
+
+  if (token && role === 'admin') {
+    return children;
+  } else {
+    return <Navigate to='/login' />;
+  }
 }
 
-export default AdminGuard
+export default AdminGuard;

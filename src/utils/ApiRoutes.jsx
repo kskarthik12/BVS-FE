@@ -22,6 +22,14 @@ const ApiRoutes = {
     CANDIDATEDETAILS:{
         path:'/user/candidate',
         authenticate:true
+    },
+    VOTESTATUS:{
+        path:'/user/voteStatus',
+        authenticate:true
+    },
+    GETALLCANDIDATES:{
+        path:'/user/getallcandidate',
+        authenticate:true 
     }
     
 }
