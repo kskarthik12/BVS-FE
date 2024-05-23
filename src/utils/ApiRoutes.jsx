@@ -30,6 +30,18 @@ const ApiRoutes = {
     GETALLCANDIDATES:{
         path:'/user/getallcandidate',
         authenticate:true 
+    },
+    UPDATEVOTE:{
+        path:'/user/update-vote',
+        authenticate:true 
+    },
+    GETALLUSERS:{
+        path:'/user/',
+        authenticate:true 
+    },
+    ADDCANDIDATE:{
+        path:'/user/addCandidate',
+        authenticate:true 
     }
     
 }

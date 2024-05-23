@@ -4,6 +4,7 @@ import Home from '../components/Home'
 import ForgotPassword from '../components/ForgotPassword'
 import UpdatePassword from '../components/UpdatePassword'
 import AdminDashboard from '../components/AdminDashboard'
+import AddCandidate from '../components/AddCandidate'
 import LiveStatus from '../components/LiveStatus'
 import AdminGuard from './AdminGuard'
 import { Navigate } from 'react-router-dom'
@@ -40,6 +41,11 @@ const AppRoutes=[
     {  path:"/Live-Vote-Status",
     element: <LiveStatus></LiveStatus>
 
+    },
+    {
+        path:"/addcandidate",
+        element: <AdminGuard> <AddCandidate/>
+         </AdminGuard>
     },
     
     {

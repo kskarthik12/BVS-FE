@@ -53,7 +53,7 @@ function SignUp() {
     </div>
   <Form onSubmit={handleSignUp}>
       <Form.Group className="mb-3" >
-        <Form.Label>Voter_id</Form.Label>
+        <Form.Label>Voter Id</Form.Label>
         <Form.Control type="text" placeholder="Enter Voter Id" name='Voter_id'/>
       </Form.Group>
 
@@ -73,8 +73,12 @@ function SignUp() {
       </Form.Group>
 
       <Form.Group className="mb-3" >
-        <Form.Label>Gender</Form.Label>
-        <Form.Control type="text" placeholder="Enter Gender" name='gender'/>
+      <Form.Label>Gender</Form.Label> 
+      <Form.Select  name='gender' required>  
+      <option>Open this select menu</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      </Form.Select>
       </Form.Group>
 
       <Form.Group className="mb-3">

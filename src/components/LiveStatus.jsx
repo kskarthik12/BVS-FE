@@ -28,17 +28,17 @@ function LiveStatus() {
 
     useEffect(() => {
         fetchVoteStatus();
-    }, []);
+    }, [district]);
 
     // Prepare data for the bar chart
     const data = {
-        labels: candidates.map(candidate => `Candidate ${candidate.candidateName} (${candidate.district})`),
+        labels: candidates.map(candidate => `Candidate ${candidate.candidateName}`),
         datasets: [
             {
                 label: 'Vote Count',
                 data: candidates.map(candidate => candidate.voteCount),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.6)', // Change the background color
+                borderColor: 'rgba(255, 99, 132, 1)', // Change the border color
                 borderWidth: 1,
             },
         ],
@@ -54,10 +54,12 @@ function LiveStatus() {
 
     return <>
         <Header />
-        <div className="live-status-container">
-            <h1>Live Vote Status</h1>
-            <div className="chart-container">
-                <Bar className="chart" data={data} options={options} />
+        <div className='full_container'>
+            <div className="live-status-container">
+                <h1>Live Vote Status</h1>
+                <div className="chart-container">
+                    <Bar className="chart" data={data} options={options} />
+                </div>
             </div>
         </div>
     </>

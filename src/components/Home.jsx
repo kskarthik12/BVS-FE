@@ -175,7 +175,7 @@ const contractABI = [
     "type": "function"
   }
 ]
-const contractAddress = '0xBF4B613935974321Bb1a3a8c17e42f5647B39B03';
+const contractAddress = '0x5BAAE64AbBa44Eae32A64FC653E4BAc1B73E84B4';
 
 
 const Home = () => {
@@ -255,13 +255,18 @@ const Home = () => {
 
   const handleVote = async (candidateId, district) => {
 
-
+      let voterId=sessionStorage.getItem('voterId');
     try {
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
       const tx = await contract.populateTransaction.vote(candidateId, district);
       const response = await signer.sendTransaction(tx);
       console.log('Transaction response:', response);
+      let res=await AxiosService.put(ApiRoutes.UPDATEVOTE.path,{ Voter_id: voterId }, {
+      
+        authenticate: ApiRoutes.UPDATEVOTE.authenticate
+      })
       toast.success('Vote successfully cast!');
+
       
       
     } catch (error){
