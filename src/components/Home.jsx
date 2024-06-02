@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Header from './Header';
 import toast from 'react-hot-toast';
 import useLogout from '../hooks/useLogout';
+import video from '../assets/video.mp4'
 
 const contractABI = [
   {
@@ -183,11 +184,11 @@ const Home = () => {
   const [signer, setSigner] = useState(null);
   const [connectedAddress, setConnectedAddress] = useState(null);
   const [candidates, setCandidates] = useState([]);
-  const logout=useLogout();
+  const logout = useLogout();
 
 
-  
-  
+
+
 
   const loadEthers = async () => {
     try {
@@ -202,15 +203,15 @@ const Home = () => {
         logout();
       } else {
         setProvider(ethereumProvider);
-      setSigner(ethSigner);
-      setConnectedAddress(address);
+        setSigner(ethSigner);
+        setConnectedAddress(address);
       }
-      
-      
-      
+
+
+
     } catch (error) {
       toast.error('Error connecting to MetaMask:', error);
-     
+
     }
   };
 
@@ -239,11 +240,11 @@ const Home = () => {
         authenticate: ApiRoutes.CANDIDATEDETAILS.authenticate
       })
       const candidates = res.data.candidates;
-      
+
       setCandidates(candidates);
     } catch (error) {
       toast.error('Error fetching candidates:', error);
-      
+
     }
   };
 
@@ -255,28 +256,28 @@ const Home = () => {
 
   const handleVote = async (candidateId, district) => {
 
-      let voterId=sessionStorage.getItem('voterId');
+    let voterId = sessionStorage.getItem('voterId');
     try {
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
       const tx = await contract.populateTransaction.vote(candidateId, district);
       const response = await signer.sendTransaction(tx);
       console.log('Transaction response:', response);
-      let res=await AxiosService.put(ApiRoutes.UPDATEVOTE.path,{ Voter_id: voterId }, {
-      
+      let res = await AxiosService.put(ApiRoutes.UPDATEVOTE.path, { Voter_id: voterId }, {
+
         authenticate: ApiRoutes.UPDATEVOTE.authenticate
       })
       toast.success('Vote successfully cast!');
 
-      
-      
-    } catch (error){
+
+
+    } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'An unexpected error occurred';
       if (errorMessage.includes("You have already voted.")) {
         toast.error("You have already voted.");
       } else {
         toast.error(errorMessage);
       }
-    } 
+    }
 
   };
 
@@ -293,7 +294,11 @@ const Home = () => {
         </div>
       ) : (
         <div className='homepage2'>
-          <h2><mark>Connected Address: {connectedAddress}</mark></h2>
+          <video autoPlay muted loop className='video'>
+        <source src={video} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+          {/* <h2><mark>Connected Address: {connectedAddress}</mark></h2> */}
           <h3>Candidates List:</h3>
           <div className="candidate-list">
             {candidates.length > 0 ? (
@@ -306,7 +311,7 @@ const Home = () => {
                       <p><strong>Name:</strong> {candidate.candidate_name}</p>
                       <p><strong>Party:</strong> {candidate.party}</p>
                       <p><strong>District:</strong> {candidate.district}</p>
-                      <Button variant="success" type="submit" onClick={()=>handleVote(candidate.candidate_id, candidate.district)}>Vote</Button>
+                      <Button variant="success" type="submit" className='vote-button' onClick={() => handleVote(candidate.candidate_id, candidate.district)}>Vote</Button>
                     </div>
                   </div>
                 </div>
@@ -321,5 +326,6 @@ const Home = () => {
     </div>
   </>
 }
+
 
 export default Home;

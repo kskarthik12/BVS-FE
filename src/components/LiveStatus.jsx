@@ -6,21 +6,19 @@ import AxiosService from '../utils/AxiosService';
 import ApiRoutes from '../utils/ApiRoutes';
 import Header from './Header';
 
-
 function LiveStatus() {
     const [candidates, setCandidates] = useState([]);
     const district = sessionStorage.getItem('District');
 
     const fetchVoteStatus = async () => {
         try {
-            let res = await AxiosService.get(ApiRoutes.VOTESTATUS.path, {
+            const res = await AxiosService.get(ApiRoutes.VOTESTATUS.path, {
                 authenticate: ApiRoutes.VOTESTATUS.authenticate
             });
             const candidates = res.data.convertedCandidates;
             const filteredCandidates = candidates.filter(candidate => candidate.district === district);
             setCandidates(filteredCandidates);
             toast.success('Live Status Updated');
-
         } catch (error) {
             toast.error(`Error fetching candidates: ${error.message}`);
         }
@@ -28,41 +26,83 @@ function LiveStatus() {
 
     useEffect(() => {
         fetchVoteStatus();
+        const interval = setInterval(fetchVoteStatus, 6000); 
+        return () => clearInterval(interval); 
     }, [district]);
+
+    // Generate a dynamic background color for each candidate
+    const generateColors = (num) => {
+        const colors = [];
+        for (let i = 0; i < num; i++) {
+            colors.push(`hsl(${Math.floor(360 / num * i)}, 70%, 50%)`);
+        }
+        return colors;
+    };
 
     // Prepare data for the bar chart
     const data = {
-        labels: candidates.map(candidate => `Candidate ${candidate.candidateName}`),
+        labels: candidates.map(candidate => candidate.candidateName),
         datasets: [
             {
                 label: 'Vote Count',
                 data: candidates.map(candidate => candidate.voteCount),
-                backgroundColor: 'rgba(255, 99, 132, 0.6)', // Change the background color
-                borderColor: 'rgba(255, 99, 132, 1)', // Change the border color
+                backgroundColor: generateColors(candidates.length), // Dynamic background color
+                borderColor: generateColors(candidates.length), // Dynamic border color
                 borderWidth: 1,
             },
         ],
     };
 
     const options = {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: `Live Vote Count in ${district}`,
+                font: {
+                    size: 24,
+                },
+            },
+            tooltip: {
+                enabled: true,
+                callbacks: {
+                    label: (context) => `Votes: ${context.raw}`,
+                },
+            },
+            legend: {
+                display: false,
+            },
+        },
         scales: {
             y: {
                 beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Votes',
+                },
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Candidates',
+                },
             },
         },
     };
 
-    return <>
-        <Header />
-        <div className='full_container'>
-            <div className="live-status-container">
-                <h1>Live Vote Status</h1>
-                <div className="chart-container">
-                    <Bar className="chart" data={data} options={options} />
+    return (
+        <>
+            <Header />
+            <div className='full_container'>
+                <div className="live-status-container">
+                    
+                    <div className="chart-container">
+                        <Bar className="chart" data={data} options={options} />
+                    </div>
                 </div>
             </div>
-        </div>
-    </>
+        </>
+    );
 }
 
 export default LiveStatus;

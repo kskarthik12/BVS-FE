@@ -68,8 +68,12 @@ function SignUp() {
       </Form.Group>
 
       <Form.Group className="mb-3" >
-        <Form.Label>District</Form.Label>
-        <Form.Control type="text" placeholder="Enter District Name" name='District'/>
+      <Form.Label>District</Form.Label> 
+      <Form.Select  name='District' required>  
+      <option>Open this select menu</option>
+      <option value="Thoothukkudi">Thoothukkudi</option>
+      <option value="Tirunelveli">Tirunelveli</option>
+      </Form.Select>
       </Form.Group>
 
       <Form.Group className="mb-3" >
