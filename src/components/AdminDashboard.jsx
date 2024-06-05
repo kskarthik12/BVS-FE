@@ -64,8 +64,10 @@ function AdminDashboard() {
             title: {
                 display: true,
                 text: 'Live vote count for all district candidates',
+                color: '#F3EAE8',
                 font: {
                     size: 24,
+                    
                 },
             },
             tooltip: {
@@ -76,6 +78,9 @@ function AdminDashboard() {
             },
             legend: {
                 display: false,
+                labels: {
+                    color: '#F3EAE8' 
+                },
             },
         },
         scales: {
@@ -84,13 +89,23 @@ function AdminDashboard() {
                 title: {
                     display: true,
                     text: 'Number of Votes',
+                    color: '#F3EAE8' 
                 },
+                ticks: {
+                    color: '#F3EAE8' 
+                }
+                
             },
             y: {
                 title: {
                     display: true,
                     text: 'Candidates',
+                    color: '#F3EAE8' 
                 },
+                ticks: {
+                    color: '#F3EAE8' 
+                }
+                
             },
         },
     };
@@ -127,21 +142,21 @@ function AdminDashboard() {
                 <div className='main-cards'>
                     <div className='card'>
                         <div className='card-inner'>
-                            <h3>Total Votes Cast</h3>
+                            <h3 className='card_text'>Total Votes Cast</h3>
                             <BiSolidDownvote className='card_icon' />
                         </div>
                         <h1>{totalVoteCount()}</h1>
                     </div>
                     <div className='card'>
                         <div className='card-inner'>
-                            <h3>MEN Votes Cast</h3>
+                            <h3 className='card_text'>MEN Votes Cast</h3>
                             <BiMale className='card_icon' />
                         </div>
                         <h1>{menVoteCount()}</h1>
                     </div>
                     <div className='card'>
                         <div className='card-inner'>
-                            <h3>WOMEN Votes Cast</h3>
+                            <h3 className='card_text'>WOMEN Votes Cast</h3>
                             <BiFemale className='card_icon' />
                         </div>
                         <h1>{womenVoteCount()}</h1>

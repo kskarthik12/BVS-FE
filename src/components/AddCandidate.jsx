@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './Header';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -7,15 +7,16 @@ import toast from 'react-hot-toast';
 import AxiosService from '../utils/AxiosService';
 import ApiRoutes from '../utils/ApiRoutes';
 import asset from '../assets/img.jpg'
-
+import { ProgressBar } from 'react-loader-spinner';
 
 
 function AddCandidate() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddCandidate = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true); // Start loading
 
     try {
       let formData = new FormData(e.target);
@@ -37,13 +38,16 @@ function AddCandidate() {
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
     }
+    finally {
+      setIsLoading(false); // Stop loading
+    }
   };
 
   return (
     <>
       <Header />
       <div className='loginWrapper'>
-        
+
         <div className='loginHeader'>
           <h2>Add Candidate</h2>
         </div>
@@ -63,11 +67,23 @@ function AddCandidate() {
             <Form.Control type="text" placeholder="Enter District Name" name='district' />
           </Form.Group>
 
-          <Button className='button' variant="primary" type="submit">
-            Add Candidate
+          <Button className='button' variant="primary" type="submit" disabled={isLoading}>
+            {isLoading ? 'Adding...' : 'Add Candidate'}
           </Button>
         </Form>
-        
+        {isLoading && (
+          <div className="loading-container">
+            <ProgressBar
+              visible={true}
+              height="80"
+              width="80"
+              color="#4fa94d"
+              ariaLabel="progress-bar-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
+          </div>
+        )}
       </div>
       <img src={asset} alt="Asset" className='img2'></img>
     </>

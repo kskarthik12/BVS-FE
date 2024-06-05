@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {Link} from 'react-router-dom'
@@ -7,21 +7,23 @@ import assets2 from '../assets/assets2.jpg'
 import AxiosService from '../utils/AxiosService';
 import ApiRoutes from '../utils/ApiRoutes'
 import { useNavigate } from 'react-router-dom';
+import { ProgressBar } from 'react-loader-spinner';
 
 
 
 function SignUp() {
   const navigate = useNavigate()
-
+  const [isLoading, setIsLoading] = useState(false);
  
 
   const handleSignUp = async(e)=>{
     e.preventDefault()
+    setIsLoading(true);
     try {
       let formData = new FormData(e.target)
       let data = Object.fromEntries(formData)
       
-      if(data.Voter_id && data.password && data.Etherium_Address && data.District && data.gender)
+      if(data.Voter_id && data.password && data.District && data.gender)
       {
         let res = await AxiosService.post(ApiRoutes.SIGNUP.path,data,{
           authenticate:ApiRoutes.SIGNUP.authenticate
@@ -40,6 +42,9 @@ function SignUp() {
 
     } catch (error) {
         toast.error(error.response.data.message || error.message)
+    }
+    finally {
+      setIsLoading(false); 
     }
   }
   return <>
@@ -62,10 +67,7 @@ function SignUp() {
         <Form.Control type="email" placeholder="Enter Email Id" name='email'/>
       </Form.Group>
 
-      <Form.Group className="mb-3" >
-        <Form.Label>Etherium Wallet Address </Form.Label>
-        <Form.Control type="text" placeholder="Enter Etherium Wallet Address " name='Etherium_Address'/>
-      </Form.Group>
+    
 
       <Form.Group className="mb-3" >
       <Form.Label>District</Form.Label> 
@@ -90,10 +92,24 @@ function SignUp() {
         <Form.Control type="password" placeholder="Password" name='password'/>
       </Form.Group>
       
-      <Button className='button' variant="primary" type="submit">
-        SignUp
+      <Button className='button' variant="primary" type="submit" disabled={isLoading}>
+        {isLoading ? 'Registering' :'SignUp'}
       </Button>
     </Form>
+
+    {isLoading && (
+          <div className="loading-container">
+            <ProgressBar
+              visible={true}
+              height="80"
+              width="80"
+              color="#4fa94d"
+              ariaLabel="progress-bar-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
+          </div>
+        )}
   </div>
   </>
 }

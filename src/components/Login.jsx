@@ -32,7 +32,6 @@ function Login() {
           sessionStorage.setItem('voterId',res.data.user.Voter_id)
           sessionStorage.setItem('role',res.data.user.role)
           sessionStorage.setItem('District',res.data.user.District)
-          sessionStorage.setItem('Etherium_Address',res.data.user.Etherium_Address)
           toast.success(res.data.message) 
           if(res.data.user.role==='admin')
             navigate('/admindashboard')

@@ -1,229 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import Form from 'react-bootstrap/Form';
 import AxiosService from '../utils/AxiosService';
-import ApiRoutes from '../utils/ApiRoutes'
+import ApiRoutes from '../utils/ApiRoutes';
 import Button from 'react-bootstrap/Button';
 import Header from './Header';
 import toast from 'react-hot-toast';
 import useLogout from '../hooks/useLogout';
-import video from '../assets/video.mp4'
-
-const contractABI = [
-  {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "candidateId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "district",
-        "type": "string"
-      }
-    ],
-    "name": "Voted",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_candidateId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_district",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_candidateName",
-        "type": "string"
-      }
-    ],
-    "name": "addCandidate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "candidates",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "district",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "candidateName",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "candidateId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "voteCount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getAllVotesOfCandidates",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "string",
-            "name": "district",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "candidateName",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "candidateId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "voteCount",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Voting.Candidate[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_candidateId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_district",
-        "type": "string"
-      }
-    ],
-    "name": "vote",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "voters",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
-const contractAddress = '0x5BAAE64AbBa44Eae32A64FC653E4BAc1B73E84B4';
-
+import video from '../assets/video.mp4';
+import Modal from 'react-bootstrap/Modal';
+import { RotatingLines } from 'react-loader-spinner';
 
 const Home = () => {
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
-  const [connectedAddress, setConnectedAddress] = useState(null);
   const [candidates, setCandidates] = useState([]);
+  const [privateKey, setPrivateKey] = useState('');
+  const [candidateId, setCandidateId] = useState('');
+  const [district, setDistrict] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const logout = useLogout();
 
-
-
-
-
-  const loadEthers = async () => {
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const ethereumProvider = new ethers.providers.Web3Provider(window.ethereum);
-      const ethSigner = ethereumProvider.getSigner();
-      const address = await ethSigner.getAddress();
-      const storedAddress = sessionStorage.getItem('Etherium_Address');
-      if (storedAddress && storedAddress !== address) {
-        // If the stored address exists and doesn't match the connected address, log out the user
-        toast.error('Stored Ethereum address does not match the connected address');
-        logout();
-      } else {
-        setProvider(ethereumProvider);
-        setSigner(ethSigner);
-        setConnectedAddress(address);
-      }
-
-
-
-    } catch (error) {
-      toast.error('Error connecting to MetaMask:', error);
-
-    }
-  };
-
-
-
-
   useEffect(() => {
-    if (window.ethereum) {
-      loadEthers();
-    } else {
-      console.error('MetaMask is not installed');
-    }
+    fetchCandidates();
   }, []);
 
   const fetchCandidates = async () => {
@@ -233,73 +30,87 @@ const Home = () => {
         toast.error('District information not found in sessionStorage');
         return;
       }
-      let res = await AxiosService.get(ApiRoutes.CANDIDATEDETAILS.path, {
-        params: {
-          district: district
-        },
-        authenticate: ApiRoutes.CANDIDATEDETAILS.authenticate
-      })
+      const res = await AxiosService.get(ApiRoutes.CANDIDATEDETAILS.path, {
+        params: { district: district },
+        authenticate: ApiRoutes.CANDIDATEDETAILS.authenticate,
+      });
       const candidates = res.data.candidates;
-
       setCandidates(candidates);
     } catch (error) {
       toast.error('Error fetching candidates:', error);
-
     }
   };
 
-  useEffect(() => {
-    if (signer) {
-      fetchCandidates();
+  const handleVote = (candidateId, district) => {
+    setCandidateId(candidateId);
+    setDistrict(district);
+    setShowModal(true);
+  };
+
+  const handlePrivateKeyChange = (event) => {
+    setPrivateKey(event.target.value);
+  };
+
+  const submitVote = async () => {
+    if (!privateKey) {
+      toast.error('Private key is required to cast your vote.');
+      return;
     }
-  }, [signer]);
-
-  const handleVote = async (candidateId, district) => {
-
-    let voterId = sessionStorage.getItem('voterId');
+    setIsLoading(true); // Start loading
     try {
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-      const tx = await contract.populateTransaction.vote(candidateId, district);
-      const response = await signer.sendTransaction(tx);
-      console.log('Transaction response:', response);
-      let res = await AxiosService.put(ApiRoutes.UPDATEVOTE.path, { Voter_id: voterId }, {
+      let voterId = sessionStorage.getItem('voterId');
 
-        authenticate: ApiRoutes.UPDATEVOTE.authenticate
-      })
+      await AxiosService.put(ApiRoutes.UPDATEVOTE.path, { Voter_id: voterId }, {
+        authenticate: ApiRoutes.UPDATEVOTE.authenticate,
+      });
+
+      await AxiosService.post(ApiRoutes.ADDVOTE.path, {
+        candidateId: candidateId,
+        district: district,
+        PRIVATE_KEY: privateKey,
+        Voter_id: voterId
+      }, {
+        authenticate: ApiRoutes.ADDVOTE.authenticate,
+      });
+
+      setShowModal(false); // Close the modal after vote submission
       toast.success('Vote successfully cast!');
-
-
-
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'An unexpected error occurred';
-      if (errorMessage.includes("You have already voted.")) {
-        toast.error("You have already voted.");
+    }
+    catch (error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            toast.error('You have already voted.');
+            break;
+          case 401:
+            toast.error('Insufficient funds.');
+            break;
+          case 402:
+            toast.error('Incorrect private key.');
+            break;
+          default:
+            toast.error(error.response.data?.message || 'An unexpected error occurred');
+        }
       } else {
-        toast.error(errorMessage);
+        toast.error(error.message || 'An unexpected error occurred');
       }
     }
-
+    finally {
+      setIsLoading(false); // Stop loading
+    }
   };
 
-  return <>
-    <Header />
-    <div>
-      {!connectedAddress ? (
-        <div className='homepage'>
+  return (
+    <>
+      <Header />
+      <div>
+        <div className="homepage2">
+          <video autoPlay muted loop className="video">
+            <source src={video} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
 
-
-          <div className='container'><h4><i><mark>Please click the below button to Connect to Your MetaMask Wallet</mark></i></h4> <br />
-            <Button className='metamask' variant="success" type="submit" onClick={loadEthers}>Connect to MetaMask</Button>
-          </div>
-        </div>
-      ) : (
-        <div className='homepage2'>
-          <video autoPlay muted loop className='video'>
-        <source src={video} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-          {/* <h2><mark>Connected Address: {connectedAddress}</mark></h2> */}
-          <h3>Candidates List:</h3>
+          <h3 className='list'>Candidates List:</h3>
           <div className="candidate-list">
             {candidates.length > 0 ? (
               candidates.map((candidate) => (
@@ -311,7 +122,14 @@ const Home = () => {
                       <p><strong>Name:</strong> {candidate.candidate_name}</p>
                       <p><strong>Party:</strong> {candidate.party}</p>
                       <p><strong>District:</strong> {candidate.district}</p>
-                      <Button variant="success" type="submit" className='vote-button' onClick={() => handleVote(candidate.candidate_id, candidate.district)}>Vote</Button>
+                      <Button
+                        variant="success"
+                        type="submit"
+                        className="vote-button"
+                        onClick={() => handleVote(candidate.candidate_id, candidate.district)}
+                      >
+                        Vote
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -320,12 +138,51 @@ const Home = () => {
               <p>No candidates found</p>
             )}
           </div>
-
         </div>
-      )}
-    </div>
-  </>
-}
+      </div>
 
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Private Key</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isLoading ? (
+            <div className="loading-container">
+              <RotatingLines
+                visible={true}
+                height="96"
+                width="96"
+                color="grey"
+                strokeWidth="5"
+                animationDuration="0.75"
+                ariaLabel="rotating-lines-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+              />
+
+            </div>
+          ) : (
+            <Form.Group controlId="privateKey">
+              <Form.Control
+                type="password"
+                placeholder="Enter your private key"
+                value={privateKey}
+                onChange={handlePrivateKeyChange}
+              />
+            </Form.Group>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)} disabled={isLoading}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={submitVote} disabled={isLoading}>
+            {isLoading ? 'Submitting...' : 'Submit Vote'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
 
 export default Home;

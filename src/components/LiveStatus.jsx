@@ -59,8 +59,10 @@ function LiveStatus() {
             title: {
                 display: true,
                 text: `Live Vote Count in ${district}`,
+                color: '#F3EAE8',
                 font: {
                     size: 24,
+                    family: 'Times New Roman'
                 },
             },
             tooltip: {
@@ -71,6 +73,9 @@ function LiveStatus() {
             },
             legend: {
                 display: false,
+                labels: {
+                    color: '#F3EAE8' 
+                },
             },
         },
         scales: {
@@ -79,13 +84,21 @@ function LiveStatus() {
                 title: {
                     display: true,
                     text: 'Number of Votes',
+                    color: '#F3EAE8' 
+                }, ticks: {
+                    color: '#F3EAE8' 
                 },
+               
             },
             x: {
                 title: {
                     display: true,
                     text: 'Candidates',
-                },
+                    color: '#F3EAE8' 
+                
+                }, ticks: {
+                    color: '#F3EAE8' 
+                }
             },
         },
     };

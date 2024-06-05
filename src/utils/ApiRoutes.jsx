@@ -42,6 +42,10 @@ const ApiRoutes = {
     ADDCANDIDATE:{
         path:'/user/addCandidate',
         authenticate:true 
+    },
+    ADDVOTE:{
+        path:'/user/addvote',
+        authenticate:true 
     }
     
 }
