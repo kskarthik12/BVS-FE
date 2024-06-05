@@ -20,7 +20,7 @@ function ForgotPassword() {
       let formData = new FormData(e.target)
       let data = Object.fromEntries(formData)
 
-      if(data.email){
+      if(data.email && data.Voter_id){
         let res = await AxiosService.post(ApiRoutes.FORGOTPASSWORD.path,data,{
           authenticate:ApiRoutes.FORGOTPASSWORD.authenticate
         })
@@ -29,9 +29,8 @@ function ForgotPassword() {
             toast.success("Please check your email for the reset password link")
         
       }
-      else
-      {
-        toast.error("Error in sending mail")
+      else{
+        toast.error("Input Voter ID and Email")
       }
 
     } catch (error) {
@@ -52,6 +51,10 @@ function ForgotPassword() {
           <Form.Group className="mb-3">
             <Form.Label>Email ID</Form.Label>
             <Form.Control type="email" placeholder="Enter your email" name='email' />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Voter Id</Form.Label>
+            <Form.Control type="text" placeholder="Enter your Voter Id" name='Voter_id' />
           </Form.Group>
 
          
