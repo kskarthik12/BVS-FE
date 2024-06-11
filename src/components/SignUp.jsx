@@ -16,37 +16,35 @@ function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
  
 
-  const handleSignUp = async(e)=>{
-    e.preventDefault()
+  const handleSignUp = async (e) => {
+    e.preventDefault();
     setIsLoading(true);
+  
     try {
-      let formData = new FormData(e.target)
-      let data = Object.fromEntries(formData)
-      
-      if(data.Voter_id && data.password && data.District && data.gender)
-      {
-        let res = await AxiosService.post(ApiRoutes.SIGNUP.path,data,{
-          authenticate:ApiRoutes.SIGNUP.authenticate
-        })
-
-        if(res.status===201)
-        {
-          toast.success(res.data.message)
-          navigate('/login')
+      let formData = new FormData(e.target);
+      let data = Object.fromEntries(formData);
+  
+      if (data.Voter_id && data.password && data.District && data.gender) {
+        let res = await AxiosService.post(ApiRoutes.SIGNUP.path, data, {
+          authenticate: ApiRoutes.SIGNUP.authenticate,
+        });
+  
+        alert("Wallet information will be sent to your registered email address. Please check your inbox.");
+  
+        if (res.status === 201) {
+          toast.success(res.data.message);
+          navigate('/login');
         }
+      } else {
+        toast.error("Please input Voter ID, Password, District, and Gender.");
       }
-      else
-      {
-        toast.error("Input Name, Email and Password")
-      }
-
     } catch (error) {
-        toast.error(error.response.data.message || error.message)
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
     }
-    finally {
-      setIsLoading(false); 
-    }
-  }
+  };
+  
   return <>
 
   <img src={assets2} alt="Asset"></img>
